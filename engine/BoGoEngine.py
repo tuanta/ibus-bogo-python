@@ -42,11 +42,6 @@ dpy = Xlib.display.Display()
 bg_backspace = dpy.keysym_to_keycode(Xlib.XK.string_to_keysym("BackSpace"))
 bg_shift = dpy.keysym_to_keycode(Xlib.XK.string_to_keysym("Shift_L"))
 
-
-
-CHARSET_UTF8 = 0
-CHARSET_TCVN3 = 1
-
 class Engine(IBus.Engine):
     __gtype_name__ = 'EngineBoGo'
 
@@ -102,7 +97,8 @@ class Engine(IBus.Engine):
                 logging.info("Number of fake backspace: %d", self.number_fake_backspace)
                 self.committed_fake_backspace = 0
                 logging.info("String to commit: %s", self.string_to_commit)
-                self.commit_fake_key(bg_backspace)
+                for i in range(self.number_fake_backspace + 1):
+                    self.commit_fake_key(bg_backspace)
                 dpy.flush()
                 return True
 
@@ -117,8 +113,9 @@ class Engine(IBus.Engine):
                 if (self.number_fake_backspace == self.committed_fake_backspace):
                     logging.info("Ready to commit")
                     self.is_faking_backspace = False
-                    # time.sleep(0.0005)
+                    time.sleep(0.01 * self.number_fake_backspace)
                     self.commit_result(self.string_to_commit)
+                    time.sleep(0.01)
                     if self.key_queue.qsize():
                         logging.info("Process key queue")
                         char = self.key_queue.get()
@@ -128,8 +125,6 @@ class Engine(IBus.Engine):
                 else:
                     logging.info("Commit fake backspace")
                     self.committed_fake_backspace += 1
-                    self.commit_fake_key(bg_backspace)
-                    dpy.flush()
                     return False
             else:
                 self.new_string = self.new_string[:-1]
