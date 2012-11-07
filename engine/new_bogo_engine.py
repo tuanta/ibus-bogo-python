@@ -50,6 +50,8 @@ FAMILY_O = u"oơô"
 FAMILY_U = u"uư"
 FAMILY_D = u"dđ"
 
+LAST_CONS = [u"", u"c", u"ch", u"m", u"n", u"nh", u"ng", u"t", u"p"]
+
 simple_telex_im = {
     'a':'a^',
     'o':'o^',
@@ -107,6 +109,12 @@ def is_vower(char):
     char = char.lower()
     return True if (char in VOWELS) else False
 
+def is_vietnamese(lastcons):
+    """
+    Check wether a given lastcons is a valid last consonant or not.
+    """
+    return True if lastcons.lower() in LAST_CONS else False
+    
 def seperate(string):
     """
     Seperate the given string into 3 parts, based on its structure
@@ -137,6 +145,10 @@ def seperate(string):
     if not comp[1]:
         comp[0] += comp[2]
         comp[2] = u""
+    if not is_vietnamese(comp[2]):
+        comp[0] = comp[0] + comp[1] + comp[2]
+        comp[1] = comp[2] = u""
+        
     return comp
 
 def change_case(string, case):
