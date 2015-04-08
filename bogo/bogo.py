@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # This file is part of ibus-bogo project.
 #
@@ -19,7 +20,8 @@
 # along with ibus-bogo.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from .valid_vietnamese import is_valid_combination
+from __future__ import unicode_literals
+from .validation import is_valid_combination
 from . import utils, accent, mark
 import logging
 import copy
@@ -283,8 +285,10 @@ def transform(comps, trans):
         action, parameter = Action.ADD_CHAR, trans[0]
 
     if action == Action.ADD_ACCENT:
+        logging.debug("add_accent(%s, %s)", components, parameter)
         components = accent.add_accent(components, parameter)
     elif action == Action.ADD_MARK and mark.is_valid_mark(components, trans):
+        logging.debug("add_mark(%s, %s)", components, parameter)
         components = mark.add_mark(components, parameter)
 
         # Handle uơ in "huơ", "thuở", "quở"
@@ -299,7 +303,7 @@ def transform(comps, trans):
                 not components[2] and components[0].lower() in ["", "h", "th", "kh"]:
             # Backup accents
             ac = accent.get_accent_string(components[1])
-            components[1] = ('u', 'U')[components[1][0].isupper()] + components[1][1]
+            components[1] = ("u", "U")[components[1][0].isupper()] + components[1][1]
             components = accent.add_accent(components, ac)
 
     elif action == Action.ADD_CHAR:
@@ -320,7 +324,7 @@ def transform(comps, trans):
             if parameter.isalpha() and \
                     accent.remove_accent_string(components[1]).lower().startswith("uơ"):
                 ac = accent.get_accent_string(components[1])
-                components[1] = ('ư', 'Ư')[components[1][0].isupper()] + \
+                components[1] = ('ư',  'Ư')[components[1][0].isupper()] + \
                     ('ơ', 'Ơ')[components[1][1].isupper()] + components[1][2:]
                 components = accent.add_accent(components, ac)
     elif action == Action.UNDO:

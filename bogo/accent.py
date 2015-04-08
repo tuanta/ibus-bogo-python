@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # This file is part of ibus-bogo project.
 #
@@ -22,6 +23,7 @@
 # TODO: add is_valid_accent() to be on par with mark.py and use it
 # at the end of new_bogo_engine.transform()
 
+from __future__ import unicode_literals
 from . import utils
 
 
@@ -87,7 +89,7 @@ def add_accent_char(char, accent):
     Accent
     """
     if char == "":
-        return "";
+        return ""
     case = char.isupper()
     char = char.lower()
     index = utils.VOWELS.find(char)
@@ -97,7 +99,7 @@ def add_accent_char(char, accent):
     return utils.change_case(char, case)
 
 
-def add_accent_at(string, accent):
+def add_accent_at(string, accent, index):
     """
     Add mark to the index-th character of the given string.  Return
     the new string after applying change.
@@ -106,8 +108,9 @@ def add_accent_at(string, accent):
     if index == -1:
         return string
     # Python can handle the case which index is out of range of given string
-    return string[:index] + accent.accent.add_accent_char(string[index], accent) \
-        + string[index+1:]
+    return string[:index] + \
+        accent.accent.add_accent_char(string[index], accent) + \
+        string[index+1:]
 
 
 def remove_accent_char(char):

@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+
+from __future__ import unicode_literals
 from bogo.mark import *
 from nose.tools import eq_
 
@@ -68,30 +71,30 @@ class TestAddMarkChar():
 
     def test_add_to_none(self):
         tests = [
-            ('a', Mark.HAT, 'â'),
+            ('a', Mark.HAT,   'â'),
             ('a', Mark.BREVE, 'ă'),
-            ('a', Mark.HORN, 'a'),
-            ('a', Mark.BAR, 'a'),
+            ('a', Mark.HORN,   'a'),
+            ('a', Mark.BAR,    'a'),
 
-            ('e', Mark.HAT, 'ê'),
+            ('e', Mark.HAT,  'ê'),
             ('e', Mark.BREVE, 'e'),
-            ('e', Mark.HORN, 'e'),
-            ('e', Mark.BAR, 'e'),
+            ('e', Mark.HORN,  'e'),
+            ('e', Mark.BAR,   'e'),
 
-            ('i', Mark.HAT, 'i'),
+            ('i', Mark.HAT,   'i'),
             ('i', Mark.BREVE, 'i'),
-            ('i', Mark.HORN, 'i'),
-            ('i', Mark.BAR, 'i'),
+            ('i', Mark.HORN,  'i'),
+            ('i', Mark.BAR,   'i'),
 
-            ('o', Mark.HAT, 'ô'),
+            ('o', Mark.HAT,  'ô'),
             ('o', Mark.BREVE, 'o'),
             ('o', Mark.HORN, 'ơ'),
-            ('o', Mark.BAR, 'o'),
+            ('o', Mark.BAR,   'o'),
 
-            ('u', Mark.HAT, 'u'),
+            ('u', Mark.HAT,   'u'),
             ('u', Mark.BREVE, 'u'),
             ('u', Mark.HORN, 'ư'),
-            ('u', Mark.BAR, 'u'),
+            ('u', Mark.BAR,   'u'),
         ]
 
         for test in tests:
@@ -100,28 +103,28 @@ class TestAddMarkChar():
     def test_change_mark(self):
         tests = [
             ('â', Mark.BREVE, 'ă'),
-            ('â', Mark.HORN, 'â'),
-            ('â', Mark.BAR, 'â'),
+            ('â', Mark.HORN,  'â'),
+            ('â', Mark.BAR,   'â'),
 
-            ('ă', Mark.HAT, 'â'),
+            ('ă', Mark.HAT,  'â'),
             ('ă', Mark.HORN, 'ă'),
-            ('ă', Mark.BAR, 'ă'),
+            ('ă', Mark.BAR,  'ă'),
 
             ('ê', Mark.BREVE, 'ê'),
-            ('ê', Mark.HORN, 'ê'),
-            ('ê', Mark.BAR, 'ê'),
+            ('ê', Mark.HORN,  'ê'),
+            ('ê', Mark.BAR,   'ê'),
 
             ('ô', Mark.BREVE, 'ô'),
-            ('ô', Mark.HORN, 'ơ'),
-            ('ô', Mark.BAR, 'ô'),
+            ('ô', Mark.HORN,  'ơ'),
+            ('ô', Mark.BAR,   'ô'),
 
             ('ơ', Mark.BREVE, 'ơ'),
-            ('ơ', Mark.HAT, 'ô'),
-            ('ơ', Mark.BAR, 'ơ'),
+            ('ơ', Mark.HAT,   'ô'),
+            ('ơ', Mark.BAR,   'ơ'),
 
             ('ư', Mark.BREVE, 'ư'),
-            ('ư', Mark.HAT, 'ư'),
-            ('ư', Mark.BAR, 'ư'),
+            ('ư', Mark.HAT,   'ư'),
+            ('ư', Mark.BAR,   'ư'),
         ]
 
         for test in tests:

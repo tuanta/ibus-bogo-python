@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # This file is part of ibus-bogo project.
 #
@@ -19,8 +20,11 @@
 # along with ibus-bogo.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-VOWELS= "àáảãạaằắẳẵặăầấẩẫậâèéẻẽẹeềếểễệêìíỉĩịi" \
-        "òóỏõọoồốổỗộôờớởỡợơùúủũụuừứửữựưỳýỷỹỵy"
+from __future__ import unicode_literals
+
+
+VOWELS = "àáảãạaằắẳẵặăầấẩẫậâèéẻẽẹeềếểễệêìíỉĩịi" + \
+         "òóỏõọoồốổỗộôờớởỡợơùúủũụuừứửữựưỳýỷỹỵy"
 
 
 def join(alist):
@@ -125,4 +129,3 @@ def separate(string):
         comps[1] = comps[1][1:]
 
     return comps
-

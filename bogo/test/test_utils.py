@@ -1,5 +1,9 @@
+# -*- coding: utf-8 -*-
+
+from __future__ import unicode_literals
 from nose.tools import eq_
 from bogo.utils import *
+
 
 def test_separate():
     eq_(separate(''), ['', '', ''])

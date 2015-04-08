@@ -1,26 +1,27 @@
+# -*- coding: utf-8 -*-
+
+from __future__ import unicode_literals
 from nose.tools import eq_
 from nose.plugins.attrib import attr
 from functools import partial
+import codecs
 
 from bogo.bogo import *
 from bogo.mark import Mark
 import os
 
-c = {
-    "input-method": "telex",
-    "skip-non-vietnamese": False
-}
-
-c_non_vn = {
+test_config = {
     "input-method": "telex",
     "skip-non-vietnamese": True
 }
 
-process_key_dfl = partial(process_key, config=c)
-process_key_non_vn = partial(process_key, config=c_non_vn)
+test_config_no_skip = {
+    "input-method": "telex",
+    "skip-non-vietnamese": False
+}
 
 
-def process_seq(seq, config=c):
+def process_seq(seq, config=test_config):
     string = ""
     raw = string
     for i in seq:
@@ -31,7 +32,7 @@ def process_seq(seq, config=c):
     return string
 
 
-process_seq_non_vn = partial(process_seq, config=c_non_vn)
+process_key_no_skip = partial(process_seq, config=test_config_no_skip)
 
 
 class TestHelpers():
@@ -57,25 +58,19 @@ class TestHelpers():
 
 class TestProcessSeq():
     def test_normal_typing(self):
-        eq_(process_seq('v'), 'v')
-        eq_(process_seq('aw'), 'ă')
-        eq_(process_seq('w'), 'ư')
-        eq_(process_seq('ow'), 'ơ')
-        eq_(process_seq('oo'), 'ô')
-        eq_(process_seq('Oo'), 'Ô')
-        eq_(process_seq('dd'), 'đ')
+        eq_(process_seq('v'),     'v')
+        eq_(process_seq('aw'),   'ă')
+        eq_(process_seq('w'),    'ư')
+        eq_(process_seq('ow'),   'ơ')
+        eq_(process_seq('oo'),   'ô')
+        eq_(process_seq('Oo'),   'Ô')
+        eq_(process_seq('dd'),   'đ')
         eq_(process_seq('muaf'), 'mùa')
         eq_(process_seq('Doongd'), 'Đông')
-        eq_(process_seq('gif'), 'gì')
+        eq_(process_seq('gif'),  'gì')
         eq_(process_seq('loAnj'), 'loẠn')
         eq_(process_seq('muongw'), 'mương')
         eq_(process_seq('qur'), 'qur')
-        eq_(process_seq('Loorngr'), 'Lôngr')
-        eq_(process_seq('LOorngr'), 'LÔngr')
-        eq_(process_seq('DDoongd'), 'Dôngd')
-        eq_(process_seq('DDd'), 'Dd')
-        eq_(process_seq('DDuowngd'), 'Dươngd')
-        eq_(process_seq('Duowngw'), 'Duongw')
         eq_(process_seq('Tosan'), 'Toán')
         eq_(process_seq('tusnw'), 'tứn')
         eq_(process_seq('dee'), 'dê')
@@ -100,8 +95,8 @@ class TestProcessSeq():
         eq_(process_seq('THUOWR'), 'THUỞ')
 
         # English words
-        eq_(process_seq('case'), 'cáe')
-        eq_(process_seq('reset'), 'rết')
+        eq_(process_key_no_skip('case'), 'cáe')
+        eq_(process_key_no_skip('reset'), 'rết')
 
     @attr('slow')
     def test_with_dictionary(self):
@@ -109,7 +104,7 @@ class TestProcessSeq():
             eq_(word, process_seq(sequence))
 
         path = os.path.join(os.path.dirname(__file__), 'DauCu.sequences')
-        with open(path) as tests:
+        with codecs.open(path, "r", "utf-8") as tests:
             for test in tests.read().splitlines():
                 sequence, word = test.rstrip().split(":")
                 yield atomic, word, sequence
@@ -126,10 +121,10 @@ class TestProcessSeq():
         eq_(process_seq("thuowr."), "thuở.")
 
         eq_(process_seq("[["), "[")
-        eq_(process_seq_non_vn("[["), "[")
+        eq_(process_seq("[["), "[")
 
         # BUG #77
-        eq_(process_seq_non_vn("ddiemer"), "điểm")
+        eq_(process_seq("ddiemer"), "điểm")
 
         # BUG #78
         eq_(process_seq("tuoufw"), "tườu")
@@ -145,10 +140,7 @@ class TestProcessSeq():
 
     def test_bug_93(self):
         eq_(process_seq("{{"), "{")
-        eq_(process_seq_non_vn("{{"), "{")
-
         eq_(process_seq("}}"), "}")
-        eq_(process_seq_non_vn("}}"), "}")
 
     def test_free_key_position(self):
         eq_(process_seq('toios'), 'tối')
@@ -180,9 +172,17 @@ class TestProcessSeq():
         eq_(process_seq('ww'), 'w')
         eq_(process_seq('uww'), 'uw')
 
+        eq_(process_seq('DDd'), 'Dd')
+
+        eq_(process_key_no_skip('Loorngr'), 'Lôngr')
+        eq_(process_key_no_skip('LOorngr'), 'LÔngr')
+        eq_(process_key_no_skip('DDoongd'), 'Dôngd')
+        eq_(process_key_no_skip('DDuowngd'), 'Dươngd')
+        eq_(process_key_no_skip('Duowngw'), 'Duongw')
+
     def test_non_vn(self):
         def atomic(word):
-            eq_(process_seq(word, config=c_non_vn), word)
+            eq_(process_seq(word), word)
 
         tests = [
             "system",
@@ -200,8 +200,8 @@ class TestProcessSeq():
         for test in tests:
             yield atomic, test
 
-        eq_(process_seq_non_vn("aans."), "ấn.")
-        eq_(process_seq_non_vn("aans]"), "ấn]")
-        # eq_(process_seq_non_vn("aans.tuongwj"), "ấn.tượng")
-        eq_(process_seq_non_vn("gi[f"), "giờ")
-        # eq_(process_seq_non_vn("taojc"), "taojc")
+        eq_(process_seq("aans."), "ấn.")
+        eq_(process_seq("aans]"), "ấn]")
+        # eq_(process_seq("aans.tuongwj"), "ấn.tượng")
+        eq_(process_seq("gi[f"), "giờ")
+        # eq_(process_seq("taojc"), "taojc")
